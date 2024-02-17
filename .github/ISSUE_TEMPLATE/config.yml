@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: ✉️ My contacts
+    url: https://linktr.ee/BennyExtreme
+    about: Open the list of all my contacts
+  - name: 📥 Download
+    url: https://github.com/BennyExtreme/UDPWiiHook/releases/latest/download/UDPWiiHook.exe
+    about: Download the latest version of UDPWiiHook
+  - name: 🔗 Main repository
+    url: https://github.com/EZForever/UDPWiiHook
+    about: Open the main repository from Eric Zhang (EZForever)

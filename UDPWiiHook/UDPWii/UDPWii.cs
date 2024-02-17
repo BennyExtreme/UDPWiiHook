@@ -216,7 +216,15 @@ namespace UDPWiiHook.UDPWii
     {
         public static DSU.Slot SlotDSU(UDPWii.Client client)
         {
-            //Console.WriteLine("[UDPWii.DataDSU] slot = {0}, seenDelta = {1}", slot, (DateTime.Now - client.lastSeen).TotalSeconds);
+            //Console.WriteLine("[UDPWii.DataDSU] slot = {0}, seenDelta = {1}", client.slot, (DateTime.Now - client.lastSeen).TotalSeconds);
+
+            // If a slot is attached to an address and the connection is dead we detach it
+            if (client.attachedTo != "" && Util.IsTimeout(client.lastSeen))
+            {
+                Console.WriteLine("[UDPWii.DataDSU] Slot {0}: Connection with {1} timed out, detached", client.slot, client.attachedTo);
+                client.attachedTo = "";
+            }
+
             DSU.Slot slotData = new DSU.Slot();
             slotData.mac = new Byte[6];
 

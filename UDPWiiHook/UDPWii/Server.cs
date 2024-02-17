@@ -15,6 +15,7 @@ namespace UDPWiiHook.UDPWii
         public bool gyroSeen;
         public DateTime lastSeen;
         public uint packetNumber;
+        public string attachedTo;
     }
 
     internal class Server
@@ -46,6 +47,19 @@ namespace UDPWiiHook.UDPWii
                     taskRecv = udp.ReceiveAsync();
                     taskRecv.Wait(token);
                     //Console.WriteLine(Util.TimingEnd());
+
+                    // Check if client is attached to an address, attach it if not
+                    if (client.attachedTo == "")
+                    {
+                        client.attachedTo = taskRecv.Result.RemoteEndPoint.ToString();
+                        Console.WriteLine("[UDPWii.Server@{0}] Now attached to {1}", client.slot, client.attachedTo);
+                    }
+                    // If the client is already attached then check if the address of the packet is the same as the attached one, otherwise skip the packet
+                    else if (client.attachedTo != taskRecv.Result.RemoteEndPoint.ToString())
+                    {
+                        //Console.WriteLine("[UDPWii.Server@{0}] Packet from non attached client {1} detected, skipping", client.slot, taskRecv.Result.RemoteEndPoint.ToString());
+                        continue;
+                    }
 
                     // Mark this server's client as "alive"
                     client.lastSeen = DateTime.Now;
@@ -80,6 +94,7 @@ namespace UDPWiiHook.UDPWii
             this.client = new Client();
             this.client.slot = slot;
             this.client.lastSeen = DateTime.MinValue;
+            this.client.attachedTo = "";
 
             this.broadcaster = new Broadcaster(String.Format("UDPWiiHook@{0:X4}", id), id, slot, port);
 

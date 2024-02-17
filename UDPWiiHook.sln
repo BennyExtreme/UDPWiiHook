@@ -5,7 +5,7 @@ VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UDPWiiHook", "UDPWiiHook\UDPWiiHook.shproj", "{8302FED9-325C-40DF-8EFC-FA306BEE5510}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "net472", "net472\net472.csproj", "{3F92D43E-5F06-4378-8EBA-3ADC3AEEB333}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "App\App.csproj", "{3F92D43E-5F06-4378-8EBA-3ADC3AEEB333}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

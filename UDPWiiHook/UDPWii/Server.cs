@@ -48,6 +48,65 @@ namespace UDPWiiHook.UDPWii
                     taskRecv.Wait(token);
                     //Console.WriteLine(Util.TimingEnd());
 
+                    // Check if client can access the slot, if the client can't access but it's already attached then deattach it
+                    if (int.Parse(Program.config.Read("onlyLocalIps", "Slot-" + client.slot)) == 1)
+                    {
+                        string ipAddress = ((IPEndPoint)taskRecv.Result.RemoteEndPoint).Address.ToString();
+
+                        if (!Util.IsPrivateIpAddress(ipAddress))
+                        {
+                            if (client.attachedTo == taskRecv.Result.RemoteEndPoint.ToString())
+                            {
+                                client.attachedTo = "";
+                                Console.WriteLine("[UDPWii.Server@{0}] Client {1} lost permission, detached", client.slot, taskRecv.Result.RemoteEndPoint.ToString());
+                                continue;
+                            }
+
+                            //Console.WriteLine("[UDPWii.Server@{0}] Packet from non local client {1} detected, skipping", client.slot, taskRecv.Result.RemoteEndPoint.ToString());
+                            continue;
+                        }
+                    }
+                    else if (int.Parse(Program.config.Read("whitelist", "Slot-" + client.slot)) == 1)
+                    {
+                        string ipAddress = ((IPEndPoint)taskRecv.Result.RemoteEndPoint).Address.ToString();
+
+                        string ips = Program.config.Read("commaSeparatedIps", "Slot-" + client.slot);
+                        string[] ipsArr = ips.Split(',');
+
+                        if (!Array.Exists(ipsArr, element => element == ipAddress))
+                        {
+                            if (client.attachedTo == taskRecv.Result.RemoteEndPoint.ToString())
+                            {
+                                client.attachedTo = "";
+                                Console.WriteLine("[UDPWii.Server@{0}] Client {1} lost permission, detached", client.slot, taskRecv.Result.RemoteEndPoint.ToString());
+                                continue;
+                            }
+
+                            //Console.WriteLine("[UDPWii.Server@{0}] Packet from non whitelisted client {1} detected, skipping", client.slot, taskRecv.Result.RemoteEndPoint.ToString());
+                            continue;
+                        }
+                    }
+                    else if (int.Parse(Program.config.Read("blacklist", "Slot-" + client.slot)) == 1)
+                    {
+                        string ipAddress = ((IPEndPoint)taskRecv.Result.RemoteEndPoint).Address.ToString();
+
+                        string ips = Program.config.Read("commaSeparatedIps", "Slot-" + client.slot);
+                        string[] ipsArr = ips.Split(',');
+
+                        if (Array.Exists(ipsArr, element => element == ipAddress))
+                        {
+                            if (client.attachedTo == taskRecv.Result.RemoteEndPoint.ToString())
+                            {
+                                client.attachedTo = "";
+                                Console.WriteLine("[UDPWii.Server@{0}] Client {1} lost permission, detached", client.slot, taskRecv.Result.RemoteEndPoint.ToString());
+                                continue;
+                            }
+
+                            //Console.WriteLine("[UDPWii.Server@{0}] Packet from blacklisted client {1} detected, skipping", client.slot, taskRecv.Result.RemoteEndPoint.ToString());
+                            continue;
+                        }
+                    }
+
                     // Check if client is attached to an address, attach it if not
                     if (client.attachedTo == "")
                     {

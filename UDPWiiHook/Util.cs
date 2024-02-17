@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Runtime.InteropServices;
 
 namespace UDPWiiHook
@@ -129,5 +130,27 @@ namespace UDPWiiHook
         }
         */
         #endregion
+        
+        public static bool IsPrivateIpAddress(string ipAddress)
+        {
+            IPAddress address = IPAddress.Parse(ipAddress);
+
+            // Private IPs ranges:
+            // 10.0.0.0 - 10.255.255.255
+            // 172.16.0.0 - 172.31.255.255
+            // 192.168.0.0 - 192.168.255.255
+
+            byte[] bytes = address.GetAddressBytes();
+            if (
+                bytes[0] == 10 ||
+                (bytes[0] == 172 && bytes[1] >= 16 && bytes[1] <= 31) ||
+                (bytes[0] == 192 && bytes[1] == 168)
+            )
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

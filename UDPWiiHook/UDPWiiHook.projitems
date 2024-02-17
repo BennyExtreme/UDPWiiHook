@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)DSU\Crc32.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DSU\DSU.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DSU\Server.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IniFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Program.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UDPWii\Broadcaster.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UDPWii\Server.cs" />

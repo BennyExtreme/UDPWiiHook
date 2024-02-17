@@ -7,8 +7,25 @@ namespace UDPWiiHook
 {
     internal static class Program
     {
+        public static IniFile config;
+
         public static void Main(string[] args)
         {
+            // Initialize the configuration file
+            config = new IniFile();
+
+            // Check if config content exists, if not create it
+            for (int slotIndex = 0; slotIndex < 4; slotIndex++)
+            {
+                if (!config.KeyExists("whitelist", "Slot-" + slotIndex))
+                {
+                    config.Write("onlyLocalIps", "0", "Slot-" + slotIndex);
+                    config.Write("whitelist", "0", "Slot-" + slotIndex);
+                    config.Write("blacklist", "0", "Slot-" + slotIndex);
+                    config.Write("commaSeparatedIps", "", "Slot-" + slotIndex);
+                }
+            }
+
             // Limit ID to range [0x0000, 0xffff] to make IDs consistent between DSU & UDPWii
             ushort id = (ushort)new Random().Next(0x00000, 0x10000);
             Console.WriteLine("[Program] id = {0:X4}", id);

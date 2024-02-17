@@ -1,0 +1,44 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+env:
+  SOLUTION_FILE_PATH: .\UDPWiiHook.sln
+  BUILD_CONFIGURATION: Release
+  PLATFORM: Any CPU
+  RUN_NUMBER: ${{github.run_number}}
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  Build:
+    if: "contains(github.event.head_commit.message, '[build]')"
+    name: Build
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout UDPWiiHook repository 
+        uses: actions/checkout@v4.1.1
+        with:
+          submodules: recursive
+      
+      - name: Install MSBuild x64
+        uses: microsoft/setup-msbuild@v2
+        with:
+          msbuild-architecture: x64
+      
+      - name: Build UDPWiiHook solution
+        working-directory: .\
+        run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:Platform="${{env.PLATFORM}}" ${{env.SOLUTION_FILE_PATH}}
+      
+      - name: Upload UDPWiiHook latest artifact
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: UDPWiiHook-${{env.RUN_NUMBER}}
+          path: ./App/bin/Release/UDPWiiHook.exe
+          if-no-files-found: error

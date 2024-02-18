@@ -19,6 +19,7 @@ namespace UDPWiiHook
             {
                 if (!config.KeyExists("whitelist", "Slot-" + slotIndex))
                 {
+                    config.Write("broadcastName", "UDPWiiHook@{id}", "Slot-" + slotIndex);
                     config.Write("onlyLocalIps", "0", "Slot-" + slotIndex);
                     config.Write("whitelist", "0", "Slot-" + slotIndex);
                     config.Write("blacklist", "0", "Slot-" + slotIndex);
@@ -28,7 +29,7 @@ namespace UDPWiiHook
 
             // Limit ID to range [0x0000, 0xffff] to make IDs consistent between DSU & UDPWii
             ushort id = (ushort)new Random().Next(0x00000, 0x10000);
-            Console.WriteLine("[Program] id = {0:X4}", id);
+            Console.WriteLine("[Program] ID = {0:X4}", id);
 
             try
             {

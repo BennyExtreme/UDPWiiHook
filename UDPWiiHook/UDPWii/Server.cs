@@ -155,7 +155,8 @@ namespace UDPWiiHook.UDPWii
             this.client.lastSeen = DateTime.MinValue;
             this.client.attachedTo = "";
 
-            this.broadcaster = new Broadcaster(String.Format("UDPWiiHook@{0:X4}", id), id, slot, port);
+            string broadcastName = String.Format(Program.config.Read("broadcastName", "Slot-" + slot).Replace("{id}", "{0:X4}"), id);
+            this.broadcaster = new Broadcaster(broadcastName, id, slot, port);
 
             Console.WriteLine("[UDPWii.Server@{0}] Initialized at port {1}", slot, port);
         }

@@ -42,13 +42,26 @@ namespace UDPWiiHook
                     new UDPWii.Server(id, 3, 4437)
                 };
 
-                Console.WriteLine("[Program] Possible UDPWii.Server addresses:");
+                Console.WriteLine("[Program] Possible local addresses:");
                 Dns.GetHostEntry(Dns.GetHostName()).AddressList
                     .Where(x => x.AddressFamily == AddressFamily.InterNetwork)
                     .Select(x => x.ToString())
                     .Where(x => !x.StartsWith("169.254."))
                     .ToList()
                     .ForEach(x => Console.WriteLine("\t" + x));
+
+                try
+                {
+                    string publicIpAddress = new WebClient().DownloadString("https://api.ipify.org");
+                    Console.WriteLine("[Program] Possible public address: ");
+                    Console.WriteLine("\t" + publicIpAddress);
+                    Console.WriteLine("Remember to open UDP slots ports in your router if you want to use clients remotely");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("[Program] Failed to retrieve public IP address (not connected to internet?):");
+                    Console.WriteLine("\t" + ex.Message);
+                }
             }
             catch(SocketException e)
             {

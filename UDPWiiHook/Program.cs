@@ -19,6 +19,7 @@ namespace UDPWiiHook
             {
                 if (!config.KeyExists("whitelist", "Slot-" + slotIndex))
                 {
+                    config.Write("port", (4434 + slotIndex).ToString(), "Slot-" + slotIndex);
                     config.Write("broadcastName", "UDPWiiHook@{id}", "Slot-" + slotIndex);
                     config.Write("onlyLocalIps", "0", "Slot-" + slotIndex);
                     config.Write("whitelist", "0", "Slot-" + slotIndex);
@@ -36,10 +37,10 @@ namespace UDPWiiHook
                 DSU.Server.CreateInstance(id, 26760);
                 UDPWii.Server.servers = new UDPWii.Server[]
                 {
-                    new UDPWii.Server(id, 0, 4434),
-                    new UDPWii.Server(id, 1, 4435),
-                    new UDPWii.Server(id, 2, 4436),
-                    new UDPWii.Server(id, 3, 4437)
+                    new UDPWii.Server(id, 0, ushort.Parse(Program.config.Read("port", "Slot-" + 0))),
+                    new UDPWii.Server(id, 1, ushort.Parse(Program.config.Read("port", "Slot-" + 1))),
+                    new UDPWii.Server(id, 2, ushort.Parse(Program.config.Read("port", "Slot-" + 2))),
+                    new UDPWii.Server(id, 3, ushort.Parse(Program.config.Read("port", "Slot-" + 3)))
                 };
 
                 Console.WriteLine("[Program] Possible local addresses:");

@@ -9,7 +9,7 @@ namespace UDPWiiHook
 {
     internal static class Program
     {
-        public const string programVersion = "1.0.5";
+        public const string programVersion = "1.0.6";
         public static IniFile config;
 
         public static void Main(string[] args)
@@ -21,11 +21,12 @@ namespace UDPWiiHook
             if (!config.KeyExists("checkUpdates"))
             {
                 config.Write("checkUpdates", "1");
+                config.Write("popupWindow", "1");
             }
 
             for (int slotIndex = 0; slotIndex < 4; slotIndex++)
             {
-                if (!config.KeyExists("whitelist", "Slot-" + slotIndex))
+                if (!config.KeyExists("port", "Slot-" + slotIndex))
                 {
                     config.Write("port", (4434 + slotIndex).ToString(), "Slot-" + slotIndex);
                     config.Write("broadcastName", "UDPWiiHook@{id}", "Slot-" + slotIndex);
@@ -49,25 +50,28 @@ namespace UDPWiiHook
 
                         if (latestVersion != programVersion)
                         {
-                            Console.WriteLine("--- --- ---\nA new version of the program is available for download!\n\nLatest Version: {0}\nCurrent Version: {1}\n\nYou can disable version check in the .ini config file.\n", latestVersion, programVersion);
-                            DialogResult result = MessageBox.Show(String.Format("A new version of the program is available for download,\nclick \"OK\" to open the download website.\n\nLatest Version: {0}\nCurrent Version: {1}\n\nYou can disable version check in the .ini config file.", latestVersion, programVersion), "New version available", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+                            Console.WriteLine("--- --- ---\nA new version of the program is available for download!\n\nLatest Version: {0}\nCurrent Version: {1}\n\nYou can disable version check in the .ini config file.\n--- --- ---", latestVersion, programVersion);
+                            if (int.Parse(config.Read("popupWindow")) == 1)
+                            {
+                                DialogResult result = MessageBox.Show(String.Format("A new version of the program is available for download,\nclick \"OK\" to open the download website.\n\nLatest Version: {0}\nCurrent Version: {1}\n\nYou can disable version check in the .ini config file.", latestVersion, programVersion), "New version available", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
 
-                            if (result == DialogResult.OK)
-                            {
-                                Process.Start("https://github.com/BennyExtreme/KBotExt/releases/latest");
-                                Console.WriteLine("Download website has been opened");
+                                if (result == DialogResult.OK)
+                                {
+                                    Process.Start("https://github.com/BennyExtreme/KBotExt/releases/latest");
+                                    Console.WriteLine("Download website has been opened");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Update warning dismissed");
+                                }
+                                Console.WriteLine("--- --- ---");
                             }
-                            else
-                            {
-                                Console.WriteLine("Update warning dismissed");
-                            }
-                            Console.WriteLine("--- --- ---");
                         }
                     }
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("[Program] Version check failed");
+                    Console.WriteLine("[Program] Version check failed (ratelimit or not connected to internet?)");
                 }
             }
 
@@ -103,8 +107,7 @@ namespace UDPWiiHook
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("[Program] Failed to retrieve public IP address (not connected to internet?):");
-                    Console.WriteLine("\t" + ex.Message);
+                    Console.WriteLine("[Program] Failed to retrieve public IP address (not connected to internet?)");
                 }
             }
             catch(SocketException e)

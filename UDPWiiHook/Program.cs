@@ -53,7 +53,7 @@ namespace UDPWiiHook
 
                                 if (result == DialogResult.OK)
                                 {
-                                    Process.Start("https://github.com/BennyExtreme/KBotExt/releases/latest");
+                                    Process.Start("https://github.com/BennyExtreme/UDPWiiHook/releases/latest");
                                     Console.WriteLine("Download website has been opened");
                                 }
                                 else
